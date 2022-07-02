@@ -13,10 +13,12 @@ namespace Catalog.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly IItemsRepository repository;
+        private readonly ILogger<ItemsController> logger;
 
-        public ItemsController(IItemsRepository repository)
+        public ItemsController(IItemsRepository repository, ILogger<ItemsController> logger)
         {
             this.repository = repository;
+            this.logger = logger;
         }
 
         // GET / Items
@@ -35,6 +37,8 @@ namespace Catalog.Controllers
             */
             var items = (await repository.GetItemsAsync())
                         .Select(item => item.AsDto());
+
+            logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mi:ss")}: Retrieved {items.Count()} items");
             return items;
         }
 
